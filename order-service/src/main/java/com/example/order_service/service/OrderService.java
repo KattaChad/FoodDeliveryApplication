@@ -1,0 +1,72 @@
+package com.example.order_service.service;
+
+import com.example.order_service.dto.CustomerDto;
+import com.example.order_service.dto.OrderRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class OrderService {
+
+    private final List<OrderRequest> orders = new ArrayList<>();
+    private final RestTemplate restTemplate;
+
+    public OrderService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public List<OrderRequest> getAllOrders() {
+        return orders;
+    }
+
+    public OrderRequest placeOrder(OrderRequest orderRequest) {
+        // Step 1: Check if restaurant exists
+        String restaurantUrl = "http://localhost:8082/restaurants/find/" + orderRequest.getResturantId();
+        var restaurant = restTemplate.getForObject(restaurantUrl, Object.class);
+
+        if (restaurant == null) {
+            throw new RuntimeException("Restaurant not found");
+        }
+
+        // Step 2: Check if menu item exists
+        String menuUrl = "http://localhost:8082/restaurants/" + orderRequest.getResturantId() + "/menu/" + orderRequest.getMenuItem();
+        Boolean itemExists = restTemplate.getForObject(menuUrl, Boolean.class);
+
+        if (itemExists == null || !itemExists) {
+            throw new RuntimeException("Menu item not found in restaurant");
+        }
+
+        // Step 3: Check if customer exists
+        String customerUrl = "http://localhost:8081/customers/find/" + orderRequest.getCustomerId();
+        var customer = restTemplate.getForObject(customerUrl, CustomerDto.class);
+
+        if (customer == null) {
+            throw new RuntimeException("Customer not found");
+        }
+
+        // Step 4: Check balance
+        if (customer.getBalance() < orderRequest.getAmount()) {
+            throw new RuntimeException("Insufficient balance");
+        }
+
+        // Step 5: Create new OrderRequest object
+        OrderRequest order = new OrderRequest(
+                orderRequest.getCustomerId(),
+                orderRequest.getResturantId(),
+                orderRequest.getMenuItem(),
+                orderRequest.getAmount(),
+                "PLACED"
+        );
+
+        orders.add(order);
+
+        // Step 6: Notify delivery service
+        String deliveryUrl = "http://localhost:8083/delivery/notify";
+        restTemplate.postForObject(deliveryUrl, order, String.class);
+
+        return order;
+    }
+}
