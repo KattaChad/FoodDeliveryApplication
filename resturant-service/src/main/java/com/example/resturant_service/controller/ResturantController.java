@@ -25,4 +25,9 @@ public class ResturantController {
     public Resturant getResturantById(@PathVariable String id) {
         return resturantService.getResturantById(id);
     }
+
+    @GetMapping("/{id}/menu/{item}")
+    public Boolean checkItemAvailability(@PathVariable String id, @PathVariable String item) {
+        return resturantService.menuItemExists(id, item);
+    }
 }

@@ -27,4 +27,13 @@ public class ResturantService {
                 .findFirst()
                 .orElse(null);
     }
+
+    public Boolean menuItemExists(String id, String item) {
+        Resturant resturant = resturants.stream()
+                .filter(r -> r.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+        
+        return resturant.getMenuItems().contains(item);
+    }
 }

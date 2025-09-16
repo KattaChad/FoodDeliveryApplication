@@ -24,7 +24,7 @@ public class OrderService {
 
     public OrderRequest placeOrder(OrderRequest orderRequest) {
         // Step 1: Check if restaurant exists
-        String restaurantUrl = "http://localhost:8082/restaurants/find/" + orderRequest.getResturantId();
+        String restaurantUrl = "http://localhost:8082/restaurants/find/" + orderRequest.getResturantId(); //OK
         var restaurant = restTemplate.getForObject(restaurantUrl, Object.class);
 
         if (restaurant == null) {
@@ -32,7 +32,7 @@ public class OrderService {
         }
 
         // Step 2: Check if menu item exists
-        String menuUrl = "http://localhost:8082/restaurants/" + orderRequest.getResturantId() + "/menu/" + orderRequest.getMenuItem();
+        String menuUrl = "http://localhost:8082/restaurants/" + orderRequest.getResturantId() + "/menu/" + orderRequest.getMenuItem(); //OK
         Boolean itemExists = restTemplate.getForObject(menuUrl, Boolean.class);
 
         if (itemExists == null || !itemExists) {
@@ -40,7 +40,7 @@ public class OrderService {
         }
 
         // Step 3: Check if customer exists
-        String customerUrl = "http://localhost:8081/customers/find/" + orderRequest.getCustomerId();
+        String customerUrl = "http://localhost:8081/customers/find/" + orderRequest.getCustomerId(); //OK
         var customer = restTemplate.getForObject(customerUrl, CustomerDto.class);
 
         if (customer == null) {
