@@ -14,9 +14,9 @@ public class CustomerService {
 
     // Adds data to customer list upon run time
     public CustomerService() {
-        customers.add(new Customer(1, "Alice", "123 Main St"));
-        customers.add(new Customer(2, "Bob", "456 Park Ave"));
-        customers.add(new Customer(3, "Charles", "761 Central Park(Yes he is homeless)"));
+        customers.add(new Customer(1, "Alice", "123 Main St", 1200));
+        customers.add(new Customer(2, "Bob", "456 Park Ave", 200));
+        customers.add(new Customer(3, "Charles", "761 Central Park(Yes he is homeless)", 0));
     }
 
     public List<Customer> getAllCustomers() {

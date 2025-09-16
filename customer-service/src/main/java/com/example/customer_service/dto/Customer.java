@@ -4,14 +4,24 @@ public class Customer {
     private int id;
     private String name;
     private String address;
+    private int balance;
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
 
     public Customer() {
     }
 
-    public Customer(int id, String name, String address) {
+    public Customer(int id, String name, String address, int balance) {
         this.id = id;
         this.name = name;
         this.address = address;
+        this.balance = balance;
     }
 
     public int getId() {
