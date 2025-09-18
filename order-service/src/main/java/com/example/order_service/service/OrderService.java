@@ -68,12 +68,12 @@ public class OrderService {
 
         orders.add(order);
 
-        // UNLEASH THIS WHEN DELIVERY-SERVICE IS READY
-        /*
+        
+        
         // Step 6: Notify delivery service
-        String deliveryUrl = "http://localhost:8083/delivery/notify"; //BUild the damn delivery service
+        String deliveryUrl = "http://localhost:8084/delivery/notify"; //Build the damn delivery service
         restTemplate.postForObject(deliveryUrl, order, String.class);
-        */
+        
         return order;
         
     }
