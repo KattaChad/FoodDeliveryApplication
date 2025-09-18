@@ -1,6 +1,10 @@
 package com.example.delivery_service.controller;
+import com.example.delivery_service.config.NoDeliveryPartnerException;
 import com.example.delivery_service.dto.OrderRequestDto;
 import com.example.delivery_service.service.DeliveryService;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,8 +18,14 @@ public class DeliveryController {
     }
 
     @PostMapping("/notify")
-    public String notifyDelivery(@RequestBody OrderRequestDto request) {
-        return deliveryService.assignDeliveryPartner(request);
+    public ResponseEntity<String> notifyDelivery(@RequestBody OrderRequestDto request) {
+        try {
+            String result = deliveryService.assignDeliveryPartner(request);
+            return ResponseEntity.ok(result);
+
+        } catch(NoDeliveryPartnerException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping

@@ -1,5 +1,6 @@
 package com.example.delivery_service.service;
 
+import com.example.delivery_service.config.NoDeliveryPartnerException;
 import com.example.delivery_service.dto.CustomerDto;
 import com.example.delivery_service.dto.DeliveryRequest;
 import com.example.delivery_service.dto.OrderRequestDto;
@@ -25,7 +26,7 @@ public class DeliveryService {
 
     public String assignDeliveryPartner(OrderRequestDto request) {
         if (partners.isEmpty()) {
-            throw new RuntimeException("No delivery partners available → Trigger rollback");
+            throw new NoDeliveryPartnerException("No delivery partners available → Trigger rollback");
         }
 
         String customerUrl = "http://localhost:8081/customers/find/" + request.getCustomerId();
