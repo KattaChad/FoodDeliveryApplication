@@ -2,6 +2,8 @@ package com.example.order_service.service;
 
 import com.example.order_service.dto.CustomerDto;
 import com.example.order_service.dto.OrderRequest;
+import com.example.order_service.dto.ResturantDto;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,15 +26,15 @@ public class OrderService {
 
     public OrderRequest placeOrder(OrderRequest orderRequest) {
         // Step 1: Check if restaurant exists
-        String restaurantUrl = "http://localhost:8082/restaurants/find/" + orderRequest.getResturantId(); //OK
-        var restaurant = restTemplate.getForObject(restaurantUrl, Object.class);
+        String restaurantUrl = "http://localhost:8082/resturants/find/" + orderRequest.getResturantId(); //OK
+        var restaurant = restTemplate.getForObject(restaurantUrl, ResturantDto.class); // Replace with Resturant DTO
 
         if (restaurant == null) {
             throw new RuntimeException("Restaurant not found");
         }
 
         // Step 2: Check if menu item exists
-        String menuUrl = "http://localhost:8082/restaurants/" + orderRequest.getResturantId() + "/menu/" + orderRequest.getMenuItem(); //OK
+        String menuUrl = "http://localhost:8082/resturants/" + orderRequest.getResturantId() + "/menu/" + orderRequest.getMenuItem(); //OK
         Boolean itemExists = restTemplate.getForObject(menuUrl, Boolean.class);
 
         if (itemExists == null || !itemExists) {
@@ -61,12 +63,18 @@ public class OrderService {
                 "PLACED"
         );
 
+        // Deduct price from balance
+        customer.setBalance(customer.getBalance() - orderRequest.getAmount());
+
         orders.add(order);
 
+        // UNLEASH THIS WHEN DELIVERY-SERVICE IS READY
+        /*
         // Step 6: Notify delivery service
-        String deliveryUrl = "http://localhost:8083/delivery/notify";
+        String deliveryUrl = "http://localhost:8083/delivery/notify"; //BUild the damn delivery service
         restTemplate.postForObject(deliveryUrl, order, String.class);
-
+        */
         return order;
+        
     }
 }
