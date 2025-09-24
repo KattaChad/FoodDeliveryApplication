@@ -77,4 +77,12 @@ public class OrderService {
         return order;
         
     }
+
+    public void rollbackOrder(OrderRequest request) {
+        String refundUrl = "http://localhost:8081/customers/refund/" + request.getCustomerId() + "/" + request.getAmount();
+        String response = restTemplate.postForObject(refundUrl, null, String.class);
+        System.out.println("Rollback executed -> customer refunded");
+        System.out.print("Message from customer-service: ");
+        System.out.println(response);
+    }
 }

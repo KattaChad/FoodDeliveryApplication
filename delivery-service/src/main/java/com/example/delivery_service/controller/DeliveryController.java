@@ -6,15 +6,18 @@ import com.example.delivery_service.service.DeliveryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/delivery")
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
+    private RestTemplate restTemplate;
 
-    public DeliveryController(DeliveryService deliveryService) {
+    public DeliveryController(DeliveryService deliveryService, RestTemplate restTemplate) {
         this.deliveryService = deliveryService;
+        this.restTemplate = restTemplate;
     }
 
     @PostMapping("/notify")
@@ -24,7 +27,11 @@ public class DeliveryController {
             return ResponseEntity.ok(result);
 
         } catch(NoDeliveryPartnerException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            // Logic to trigger rollback in order-service
+            String url = "http://localhost:8083/orders/rollback";
+            restTemplate.postForObject(url, request, String.class);
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Rollback triggered: " + e.getMessage());
         }
     }
 

@@ -2,6 +2,8 @@ package com.example.customer_service.controller;
 
 import com.example.customer_service.dto.Customer;
 import com.example.customer_service.service.CustomerService;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,5 +36,11 @@ public class CustomerController {
     @PostMapping("/add")
     public Customer addCustomer(@RequestBody Customer customer) {
         return customerService.addCustomer(customer);
+    }
+
+    @PostMapping("/refund/{id}/{amount}")
+    public ResponseEntity<String> refundBalance(@PathVariable int id, @PathVariable int amount) {
+        customerService.addBalance(id, amount);
+        return ResponseEntity.ok("Refunded " + amount + " to customer " + id);
     }
 }

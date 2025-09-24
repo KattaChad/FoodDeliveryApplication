@@ -28,4 +28,11 @@ public class OrderController {
         OrderRequest placedOrder = orderService.placeOrder(orderRequest);
         return ResponseEntity.ok(placedOrder);
     }
+
+    @PostMapping("/rollback")
+    public ResponseEntity<String> rollbackOrder(@RequestBody OrderRequest request) {
+        orderService.rollbackOrder(request);
+        return ResponseEntity.ok("Rollback completed for order of customer " + request.getCustomerId());
+    }
+
 }

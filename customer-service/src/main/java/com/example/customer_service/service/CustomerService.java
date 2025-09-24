@@ -34,4 +34,9 @@ public class CustomerService {
         customers.add(customer);
         return customer;
     }
+
+    public void addBalance(int id, int amount) {
+        Customer customer = getCustomerById(id);
+        customer.setBalance(customer.getBalance() + amount);
+    }
 }
